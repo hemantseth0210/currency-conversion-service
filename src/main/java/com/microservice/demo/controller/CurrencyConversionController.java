@@ -19,9 +19,6 @@ import com.microservice.demo.service.CurrencyConversionService;
 @RestController
 public class CurrencyConversionController {
 
-	private static final Logger logger = LoggerFactory.getLogger(CurrencyConversionController.class);
-
-	
 	@Autowired
 	CurrencyConversionService currencyConversionService;
 	
