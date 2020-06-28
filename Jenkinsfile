@@ -15,8 +15,19 @@ pipeline {
       stage('Build') {
          steps {
             sh "mvn -version"
-            sh "mvn clean install"
+            sh "mvn -B -DskipTests clean package"
          }
+      }
+      stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
+           
       }
       stage("SonarQube analysis") {
       	 steps {
@@ -24,6 +35,13 @@ pipeline {
             	sh 'mvn clean package sonar:sonar'
             }
          }
+      }
+      stage("Quality Gate") {
+          steps {
+              timeout(time: 1, unit: 'HOURS') {
+                  waitForQualityGate abortPipeline: true
+                }
+            }
       }
       stage('Build Docker Image'){
           steps {
@@ -47,5 +65,19 @@ pipeline {
             sh 'kubectl set image deployment/currency-conversion-deployment currency-conversion=hemantseth0210/currency-conversion-service:1.0.${BUILD_NUMBER} --namespace demo'
          }
       }
-   }
+     }
+     post {
+        success {
+            echo 'Email notification being sent on build success'
+            emailext body: "SUCCESS: Job ${env.JOB_NAME} ${env.BUILD_NUMBER} \n  Check console output at ${env.BUILD_URL}", 
+            recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
+            subject: "Jenkins Build SUCCESS: Job ${env.JOB_NAME}"
+        }
+        failure {
+            echo 'Email notification being sent on build failure'
+            emailext body: "FAILED: Job ${env.JOB_NAME} ${env.BUILD_NUMBER} \n  Check console output at ${env.BUILD_URL}", 
+            recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], 
+            subject: "Jenkins Build FAILED: Job ${env.JOB_NAME}"
+        }
+    }
 }

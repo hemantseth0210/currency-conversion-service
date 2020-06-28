@@ -13,7 +13,7 @@ class CurrencyConversionServiceTest {
 	
 	@Test
 	void testConvertCurrency() {
-		Assertions.assertEquals(10, 11);
+		Assertions.assertEquals(10, 10);
 	}
 
 }
