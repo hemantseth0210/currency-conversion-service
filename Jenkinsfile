@@ -55,6 +55,7 @@ pipeline {
           steps {
           	  echo 'Login to Docker Hub'	
               sh 'docker login --username=$DOCKER_HUB_LOGIN_USR --password=$DOCKER_HUB_LOGIN_PSW'
+              echo 'Push the image to Docker Hub'
               sh 'docker push hemantseth0210/currency-conversion-service:1.0.${BUILD_NUMBER}'
           }
       }
