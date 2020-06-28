@@ -18,6 +18,13 @@ pipeline {
             sh "mvn clean install"
          }
       }
+      stage("SonarQube analysis") {
+      	 steps {
+            withSonarQubeEnv('My SonarQube Server') {
+            	sh 'mvn clean package sonar:sonar'
+            }
+         }
+      }
       stage('Build Docker Image'){
           steps {
               sh 'docker build -t hemantseth0210/currency-conversion-service:1.0.${BUILD_NUMBER} .'
