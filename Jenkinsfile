@@ -1,11 +1,11 @@
 pipeline {
    agent any
 
-   tools {
+   //tools {
       // Install the Maven version configured as "M3" and add it to the path.
-      maven "M3"
-   }
-
+      //maven "M3"
+   //}
+   
    stages {
       stage('SCM Checkout'){
           steps {
@@ -14,26 +14,31 @@ pipeline {
       }
       stage('Build') {
          steps {
-            sh "mvn -version"
-            sh "mvn -B -DskipTests clean package"
+             withMaven(maven: 'M3') {
+                sh "mvn -version"
+                sh "mvn -B -DskipTests clean package"   
+             }
          }
       }
       stage('Test') {
             steps {
-                sh 'mvn test'
+                withMaven(maven: 'M3') {
+                    sh "mvn test"
+                }
             }
             post {
                 always {
                     junit 'target/surefire-reports/*.xml'
                 }
             }
-           
       }
-      stage("SonarQube analysis") {
+      stage("SonarQube Analysis") {
       	 steps {
-            withSonarQubeEnv('sonarqube-server') {
-            	sh 'mvn clean package sonar:sonar'
-            }
+      	      withMaven(maven: 'M3') {
+      	           withSonarQubeEnv('sonarqube-server') {
+            	        sh 'mvn clean package sonar:sonar'
+                   }
+      	      }
          }
       }
       stage("Quality Gate") {
@@ -59,7 +64,7 @@ pipeline {
               sh 'docker push hemantseth0210/currency-conversion-service:1.0.${BUILD_NUMBER}'
           }
       }
-      stage('Deploy to cluster') {
+      stage('Deploy to GKE Cluster') {
          steps {
             echo 'Login to cluster'
             sh 'gcloud container clusters get-credentials currency-conversion-cluster --zone us-east1-b --project hemant-seth-0210'
