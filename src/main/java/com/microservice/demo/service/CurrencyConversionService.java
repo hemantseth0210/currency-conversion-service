@@ -1,7 +1,10 @@
 package com.microservice.demo.service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -11,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.microservice.demo.controller.CurrencyConversionController;
 import com.microservice.demo.domain.CurrencyConversion;
 
 @Service
@@ -41,6 +43,16 @@ public class CurrencyConversionService {
 		return new CurrencyConversion(response.getId(), from, to, 
 				response.getConversionMultiple(), quantity, 
 				quantity.multiply(response.getConversionMultiple()));
+	}
+
+	public List<CurrencyConversion> getAllCurrencyConversionRate() {
+		logger.info("Calling the Currency Exchange Service {} to retrieve all the exchange rate", currencyExchangeServiceUrl+"/rates");
+		ResponseEntity<CurrencyConversion[]> response = new RestTemplate()
+				.getForEntity(currencyExchangeServiceUrl + "/currency-exchange/rates", 
+						CurrencyConversion[].class);
+		List<CurrencyConversion> currencyConversionList = new ArrayList<CurrencyConversion>(Arrays.asList(response.getBody()));
+		logger.info("Response received from Currency Exchange Service {} ", currencyConversionList);
+		return currencyConversionList;
 	}
 
 }

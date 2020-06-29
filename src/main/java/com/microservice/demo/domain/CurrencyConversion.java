@@ -2,6 +2,10 @@ package com.microservice.demo.domain;
 
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+@JsonInclude(Include.NON_NULL)
 public class CurrencyConversion {
 
 	private Long id;
@@ -14,8 +18,7 @@ public class CurrencyConversion {
 	
 	
 	public CurrencyConversion() {
-		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	public CurrencyConversion(Long id, String from, String to, BigDecimal conversionMultiple, BigDecimal quantity,
