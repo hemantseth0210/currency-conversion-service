@@ -7,11 +7,13 @@ pipeline {
    //}
    
    stages {
+      /*
       stage('SCM Checkout'){
           steps {
             git branch: 'master', url: 'https://github.com/hemantseth0210/currency-conversion-service.git'  
           }
       }
+      */
       stage('Build') {
          steps {
              withMaven(maven: 'M3') {
