@@ -14,7 +14,7 @@ public class CurrencyConversion {
 	private BigDecimal conversionMultiple;
 	private BigDecimal quantity;
 	private BigDecimal totalCalculatedAmout;
-	
+	private String dummy = "Dummy";
 	
 	
 	public CurrencyConversion() {
@@ -79,5 +79,14 @@ public class CurrencyConversion {
 	public void setTotalCalculatedAmout(BigDecimal totalCalculatedAmout) {
 		this.totalCalculatedAmout = totalCalculatedAmout;
 	}
+
+	public String getDummy() {
+		return dummy;
+	}
+
+	public void setDummy(String dummy) {
+		this.dummy = dummy;
+	}
+	
 	
 }
